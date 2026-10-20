@@ -53,39 +53,39 @@
                     >
                         <h1
                             class="text-xl sm:text-2xl font-bold tracking-tight cursor-pointer flex items-center gap-2"
-                            @click="currentView = 'home'; displayCart = false; mobileMenuOpen = false"
+                            @click="setView('home')"
                         >
                             <i class="fa fa-graduation-cap"></i> ShopEd
                         </h1>
 
                         <nav class="hidden md:flex items-center gap-2">
                             <button
-                                @click="currentView = 'home'; displayCart = false"
-                                :class="currentView === 'home' && !displayCart ? 'bg-black text-white' : 'bg-white text-black'"
+                                @click="setView('home')"
+                                :class="currentView === 'home' ? 'bg-black text-white' : 'bg-white text-black'"
                                 class="px-2.5 sm:px-3 py-1 border border-black text-xs sm:text-sm inline-flex items-center gap-1.5"
                             >
                                 <i class="fa fa-home"></i> Home
                             </button>
 
                             <button
-                                @click="currentView = 'lessons'; displayCart = false"
-                                :class="currentView === 'lessons' && !displayCart ? 'bg-black text-white' : 'bg-white text-black'"
+                                @click="setView('lessons')"
+                                :class="currentView === 'lessons' ? 'bg-black text-white' : 'bg-white text-black'"
                                 class="px-2.5 sm:px-3 py-1 border border-black text-xs sm:text-sm inline-flex items-center gap-1.5"
                             >
                                 <i class="fa fa-book"></i> Lessons
                             </button>
 
                             <button
-                                @click="currentView = 'about'; displayCart = false"
-                                :class="currentView === 'about' && !displayCart ? 'bg-black text-white' : 'bg-white text-black'"
+                                @click="setView('about')"
+                                :class="currentView === 'about' ? 'bg-black text-white' : 'bg-white text-black'"
                                 class="px-2.5 sm:px-3 py-1 border border-black text-xs sm:text-sm inline-flex items-center gap-1.5"
                             >
                                 <i class="fa fa-info-circle"></i> About Us
                             </button>
 
                             <button
-                                @click="currentView = 'contact'; displayCart = false"
-                                :class="currentView === 'contact' && !displayCart ? 'bg-black text-white' : 'bg-white text-black'"
+                                @click="setView('contact')"
+                                :class="currentView === 'contact' ? 'bg-black text-white' : 'bg-white text-black'"
                                 class="px-2.5 sm:px-3 py-1 border border-black text-xs sm:text-sm inline-flex items-center gap-1.5"
                             >
                                 <i class="fa fa-envelope"></i> Contact Us
@@ -94,10 +94,10 @@
 
                         <div class="absolute top-16 md:top-20 right-2 md:right-10">
                             <button
-                                v-bind:disabled="numberOfItems === 0 && !displayCart"
+                                v-bind:disabled="numberOfItems === 0 && currentView !== 'cart'"
                                 @click="toggleCart"
                                 class="relative flex items-center border-2 ring-2 ring-transparent border-transparent justify-center px-3 py-1 bg-black text-white rounded-full w-8 h-8 text-sm inline-flex items-center gap-1.5"
-                                :class="[displayCart && 'ring-black border-white', (numberOfItems === 0 && !displayCart) && 'opacity-50 cursor-not-allowed']"
+                                :class="[currentView === 'cart' && 'ring-black border-white', (numberOfItems === 0 && currentView !== 'cart') && 'opacity-50 cursor-not-allowed']"
                             >
                                 <i class="fa fa-shopping-cart"></i>
                                 <span
@@ -126,32 +126,32 @@
                         class="absolute w-full left-0 top-10 md:hidden mt-3 pt-3 px-5 border-t border-b border-black flex flex-col gap-2 bg-white pb-3"
                     >
                         <button
-                            @click="currentView = 'home'; displayCart = false; mobileMenuOpen = false"
-                            :class="currentView === 'home' && !displayCart ? 'bg-black text-white' : 'bg-white text-black'"
+                            @click="setView('home')"
+                            :class="currentView === 'home' ? 'bg-black text-white' : 'bg-white text-black'"
                             class="w-full text-left px-3 py-2 border border-black text-sm inline-flex items-center gap-2"
                         >
                             <i class="fa fa-home"></i> Home
                         </button>
 
                         <button
-                            @click="currentView = 'lessons'; displayCart = false; mobileMenuOpen = false"
-                            :class="currentView === 'lessons' && !displayCart ? 'bg-black text-white' : 'bg-white text-black'"
+                            @click="setView('lessons')"
+                            :class="currentView === 'lessons' ? 'bg-black text-white' : 'bg-white text-black'"
                             class="w-full text-left px-3 py-2 border border-black text-sm inline-flex items-center gap-2"
                         >
                             <i class="fa fa-book"></i> Lessons
                         </button>
 
                         <button
-                            @click="currentView = 'about'; displayCart = false; mobileMenuOpen = false"
-                            :class="currentView === 'about' && !displayCart ? 'bg-black text-white' : 'bg-white text-black'"
+                            @click="setView('about')"
+                            :class="currentView === 'about' ? 'bg-black text-white' : 'bg-white text-black'"
                             class="w-full text-left px-3 py-2 border border-black text-sm inline-flex items-center gap-2"
                         >
                             <i class="fa fa-info-circle"></i> About Us
                         </button>
 
                         <button
-                            @click="currentView = 'contact'; displayCart = false; mobileMenuOpen = false"
-                            :class="currentView === 'contact' && !displayCart ? 'bg-black text-white' : 'bg-white text-black'"
+                            @click="setView('contact')"
+                            :class="currentView === 'contact' ? 'bg-black text-white' : 'bg-white text-black'"
                             class="w-full text-left px-3 py-2 border border-black text-sm inline-flex items-center gap-2"
                         >
                             <i class="fa fa-envelope"></i> Contact Us
@@ -162,7 +162,7 @@
 
             <main class="max-w-4xl mx-auto px-4 sm:px-6 pt-6 pb-6">
                 <div
-                    v-if="currentView === 'home' && !displayCart"
+                    v-if="currentView === 'home'"
                     class="border border-black p-4 sm:p-5 mb-6 bg-white"
                 >
                     <h2 class="text-lg font-bold mb-2">Welcome to ShopEd</h2>
@@ -172,7 +172,7 @@
                         campuses.
                     </p>
                     <button
-                        @click="currentView = 'lessons'"
+                        @click="setView('lessons')"
                         class="px-4 py-1.5 bg-black text-white text-sm inline-flex items-center gap-1.5"
                     >
                         <i class="fa fa-book"></i> View Lessons
@@ -181,7 +181,7 @@
 
                 <div
                     class="bg-white p-3 sm:p-5 border border-black"
-                    v-if="currentView === 'lessons' && !displayCart"
+                    v-if="currentView === 'lessons'"
                 >
                     <div
                         class="flex flex-col sm:flex-row gap-3 w-full mb-6 border border-black bg-white p-3"
@@ -350,7 +350,7 @@
                 </div>
 
                 <div
-                    v-if="currentView === 'about' && !displayCart"
+                    v-if="currentView === 'about'"
                     class="border border-black p-4 sm:p-5 mb-6 bg-white"
                 >
                     <h2 class="text-lg font-bold mb-2">About ShopEd</h2>
@@ -365,7 +365,7 @@
                 </div>
 
                 <div
-                    v-if="currentView === 'contact' && !displayCart"
+                    v-if="currentView === 'contact'"
                     class="border border-black p-4 sm:p-5 mb-6 bg-white"
                 >
                     <h2 class="text-lg font-bold mb-2">Contact Us</h2>
@@ -418,7 +418,7 @@
                     </form>
                 </div>
 
-                <div v-if="displayCart">
+                <div v-if="currentView === 'cart'">
                     <div class="border border-black p-4 sm:p-6 mb-6 bg-white">
                         <h2
                             class="text-lg sm:text-xl font-bold mb-4 flex items-center gap-2"
@@ -432,7 +432,7 @@
                         >
                             <p class="text-lg font-bold">Your cart is empty.</p>
                             <button
-                                @click="displayCart = false; currentView = 'lessons'"
+                                @click="setView('lessons')"
                                 class="mt-4 px-4 py-2 border border-black bg-black text-white hover:bg-neutral-800 text-sm font-bold inline-flex items-center gap-2"
                             >
                                 <i class="fa fa-arrow-left"></i> Continue
@@ -645,7 +645,6 @@
                 data() {
                     return {
                         currentView: "home",
-                        displayCart: false,
                         mobileMenuOpen: false,
                         cart: [],
                         lessons: lessonsData,
@@ -663,6 +662,12 @@
                             phone: ""
                         }
                     };
+                },
+                mounted() {
+                    this.syncViewWithHash();
+                    window.addEventListener("hashchange", () => {
+                        this.syncViewWithHash();
+                    });
                 },
                 computed: {
                     numberOfItems() {
@@ -723,6 +728,35 @@
                     }
                 },
                 methods: {
+                    setView(view) {
+                        if (view === "cart" && this.numberOfItems === 0) {
+                            return;
+                        }
+                        this.currentView = view;
+                        window.location.hash = view;
+                        this.mobileMenuOpen = false;
+                    },
+
+                    syncViewWithHash() {
+                        const validViews = [
+                            "home",
+                            "lessons",
+                            "about",
+                            "contact",
+                            "cart"
+                        ];
+                        const hash = window.location.hash.replace("#", "").trim();
+                        if (hash === "cart" && this.numberOfItems === 0) {
+                            this.setView("lessons");
+                            return;
+                        }
+                        if (validViews.includes(hash)) {
+                            this.currentView = hash;
+                        } else {
+                            this.setView("home");
+                        }
+                    },
+
                     addToCart(lesson) {
                         if (this.canAddToCart(lesson)) {
                             this.cart.push(lesson.id);
@@ -735,11 +769,14 @@
                     },
 
                     toggleCart() {
-                        if (this.cart.length === 0 && !this.displayCart) {
+                        if (this.numberOfItems === 0 && this.currentView !== "cart") {
                             return;
                         }
-                        this.displayCart = !this.displayCart;
-                        this.mobileMenuOpen = false;
+                        if (this.currentView === "cart") {
+                            this.setView("lessons");
+                        } else {
+                            this.setView("cart");
+                        }
                     },
 
                     checkout() {
@@ -751,7 +788,7 @@
                             this.order.phoneCountryCode = "+234";
                             this.selectedCountryName = "Nigeria";
                             this.order.phone = "";
-                            this.displayCart = false;
+                            this.setView("lessons");
                         } else {
                             alert("Cheeky boy");
                         }
