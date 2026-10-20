@@ -596,8 +596,11 @@
                     };
                 },
                 watch: {
-                    cart(newCart) {
-                        localStorage.setItem("shoped_cart", JSON.stringify(newCart));
+                    cart: {
+                        handler(newCart) {
+                            localStorage.setItem("shoped_cart", JSON.stringify(newCart));
+                        },
+                        deep: true
                     }
                 },
                 mounted() {
