@@ -240,12 +240,12 @@
                                         ></i>
                                     </button>
                                     <button
-                                        @click="sortBy = 'availability'; sortByOpen = false"
+                                        @click="sortBy = 'spaces'; sortByOpen = false"
                                         class="w-full text-left px-3 py-1.5 text-sm hover:bg-black hover:text-white flex items-center justify-between"
                                     >
-                                        <span>Availability</span>
+                                        <span>Spaces</span>
                                         <i
-                                            v-if="sortBy === 'availability'"
+                                            v-if="sortBy === 'spaces'"
                                             class="fa fa-check"
                                         ></i>
                                     </button>
@@ -326,7 +326,7 @@
                                 </p>
 
                                 <p
-                                    v-if="lesson.availability < 1"
+                                    v-if="remainingSpaces(lesson) < 1"
                                     class="text-sm mb-2 text-red-800 font-medium"
                                 >
                                     <i class="fa fa-users"></i> No spaces
@@ -334,7 +334,7 @@
                                 </p>
                                 <p v-else class="text-sm mb-2">
                                     <i class="fa fa-users"></i> {{
-                                    lesson.availability }} spaces available
+                                    remainingSpaces(lesson) }} spaces available
                                 </p>
                             </div>
                             <button
@@ -529,17 +529,17 @@
                                     <div>
                                         <label
                                             class="block text-xs font-bold mb-1"
-                                            >Customer Name:</label
+                                            >Name:</label
                                         >
                                         <input
-                                            v-model="order.customerName"
+                                            v-model="order.name"
                                             type="text"
                                             required
                                             placeholder="John Doe"
                                             class="w-full p-2 border border-black text-sm"
                                         />
                                         <p
-                                            v-if="order.customerName.length > 0 && !isNameValid"
+                                            v-if="order.name.length > 0 && !isNameValid"
                                             class="text-red-500 text-xs mt-1"
                                         >
                                             Name cannot start with numbers or
@@ -656,14 +656,27 @@
                         selectedCountryName: "Nigeria",
                         countries: countryCodesData,
                         order: {
-                            customerName: "",
+                            name: "",
                             email: "",
                             phoneCountryCode: "+234",
                             phone: ""
                         }
                     };
                 },
+                watch: {
+                    cart(newCart) {
+                        localStorage.setItem("shoped_cart", JSON.stringify(newCart));
+                    }
+                },
                 mounted() {
+                    const savedCart = localStorage.getItem("shoped_cart");
+                    if (savedCart) {
+                        try {
+                            this.cart = JSON.parse(savedCart);
+                        } catch (e) {
+                            this.cart = [];
+                        }
+                    }
                     this.syncViewWithHash();
                     window.addEventListener("hashchange", () => {
                         this.syncViewWithHash();
@@ -685,7 +698,7 @@
 
                     isNameValid() {
                         const nameRegex = /^[A-Za-z][A-Za-z\s'-]*$/;
-                        return nameRegex.test(this.order.customerName.trim());
+                        return nameRegex.test(this.order.name.trim());
                     },
 
                     isEmailValid() {
@@ -757,15 +770,18 @@
                         }
                     },
 
-                    addToCart(lesson) {
-                        if (this.canAddToCart(lesson)) {
-                            this.cart.push(lesson.id);
-                            lesson.availability = lesson.availability - 1;
-                        }
+                    remainingSpaces(lesson) {
+                        return lesson.spaces - this.lessonCount(lesson.id);
                     },
 
                     canAddToCart(lesson) {
-                        return lesson.availability > 0;
+                        return this.remainingSpaces(lesson) > 0;
+                    },
+
+                    addToCart(lesson) {
+                        if (this.canAddToCart(lesson)) {
+                            this.cart.push(lesson.id);
+                        }
                     },
 
                     toggleCart() {
@@ -783,7 +799,8 @@
                         if (this.canCheckout) {
                             alert("Order has been placed successfully!");
                             this.cart = [];
-                            this.order.customerName = "";
+                            localStorage.removeItem("shoped_cart");
+                            this.order.name = "";
                             this.order.email = "";
                             this.order.phoneCountryCode = "+234";
                             this.selectedCountryName = "Nigeria";
@@ -802,12 +819,6 @@
                         const index = this.cart.indexOf(lessonID);
                         if (index !== -1) {
                             this.cart.splice(index, 1);
-                        }
-                        const lesson = this.lessons.find(
-                            lesson => lesson.id === lessonID
-                        );
-                        if (lesson) {
-                            lesson.availability = lesson.availability + 1;
                         }
                     },
 
