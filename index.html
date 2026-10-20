@@ -39,8 +39,8 @@
             style="min-height: 100dvh"
         >
             <div
-                v-if="sortByOpen || sortOrderOpen || phoneCountryOpen || mobileMenuOpen"
-                @click="sortByOpen = false; sortOrderOpen = false; phoneCountryOpen = false; mobileMenuOpen = false"
+                v-if="mobileMenuOpen"
+                @click="mobileMenuOpen = false"
                 class="fixed inset-0 z-20"
             ></div>
 
@@ -189,112 +189,53 @@
                         <div
                             class="relative flex flex-col sm:flex-row sm:items-center gap-2 w-full sm:w-auto"
                         >
-                            <span class="text-sm font-bold whitespace-nowrap"
-                                >Sort By:</span
+                            <label for="sortBySelect" class="text-sm font-bold whitespace-nowrap"
+                                >Sort By:</label
                             >
                             <div class="relative w-full sm:w-auto">
-                                <button
-                                    @click="sortByOpen = !sortByOpen; sortOrderOpen = false"
-                                    class="px-3 py-1.5 border border-black text-sm bg-white font-medium inline-flex items-center justify-between gap-2 w-full sm:w-40"
+                                <select
+                                    id="sortBySelect"
+                                    v-model="sortBy"
+                                    class="appearance-none bg-white text-black border border-black px-3 py-1.5 pr-8 text-sm font-medium rounded-none w-full sm:w-40 cursor-pointer focus:outline-none"
                                 >
-                                    <span
-                                        >{{ sortBy ?
-                                        sortBy.charAt(0).toUpperCase() +
-                                        sortBy.slice(1) : 'Select Filter'
-                                        }}</span
+                                    <option value="" disabled hidden>Select filter</option>
+                                    <option
+                                        v-for="opt in sortOptions"
+                                        :key="opt.value"
+                                        :value="opt.value"
                                     >
-                                    <i class="fa fa-chevron-down text-xs"></i>
-                                </button>
-                                <div
-                                    v-if="sortByOpen"
-                                    class="absolute top-full left-0 mt-1 w-full sm:w-40 bg-white border border-black shadow-lg z-30 py-1"
-                                >
-                                    <button
-                                        @click="sortBy = 'subject'; sortByOpen = false"
-                                        class="w-full text-left px-3 py-1.5 text-sm hover:bg-black hover:text-white flex items-center justify-between"
-                                    >
-                                        <span>Subject</span>
-                                        <i
-                                            v-if="sortBy === 'subject'"
-                                            class="fa fa-check"
-                                        ></i>
-                                    </button>
-                                    <button
-                                        @click="sortBy = 'location'; sortByOpen = false"
-                                        class="w-full text-left px-3 py-1.5 text-sm hover:bg-black hover:text-white flex items-center justify-between"
-                                    >
-                                        <span>Location</span>
-                                        <i
-                                            v-if="sortBy === 'location'"
-                                            class="fa fa-check"
-                                        ></i>
-                                    </button>
-                                    <button
-                                        @click="sortBy = 'price'; sortByOpen = false"
-                                        class="w-full text-left px-3 py-1.5 text-sm hover:bg-black hover:text-white flex items-center justify-between"
-                                    >
-                                        <span>Price</span>
-                                        <i
-                                            v-if="sortBy === 'price'"
-                                            class="fa fa-check"
-                                        ></i>
-                                    </button>
-                                    <button
-                                        @click="sortBy = 'spaces'; sortByOpen = false"
-                                        class="w-full text-left px-3 py-1.5 text-sm hover:bg-black hover:text-white flex items-center justify-between"
-                                    >
-                                        <span>Spaces</span>
-                                        <i
-                                            v-if="sortBy === 'spaces'"
-                                            class="fa fa-check"
-                                        ></i>
-                                    </button>
-                                </div>
+                                        {{ opt.label }}
+                                    </option>
+                                </select>
+                                <i
+                                    class="fa fa-chevron-down text-xs absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-black"
+                                ></i>
                             </div>
                         </div>
 
                         <div
                             class="relative flex flex-col sm:flex-row sm:items-center gap-2 w-full sm:w-auto"
                         >
-                            <span class="text-sm font-bold whitespace-nowrap"
-                                >Order:</span
+                            <label for="sortOrderSelect" class="text-sm font-bold whitespace-nowrap"
+                                >Order:</label
                             >
                             <div class="relative w-full sm:w-auto">
-                                <button
-                                    @click="sortOrderOpen = !sortOrderOpen; sortByOpen = false"
-                                    class="px-3 py-1.5 border border-black text-sm bg-white font-medium inline-flex items-center justify-between gap-2 w-full sm:w-36"
+                                <select
+                                    id="sortOrderSelect"
+                                    v-model="sortOrder"
+                                    class="appearance-none bg-white text-black border border-black px-3 py-1.5 pr-8 text-sm font-medium rounded-none w-full sm:w-36 cursor-pointer focus:outline-none"
                                 >
-                                    <span
-                                        >{{ sortOrder === 'asc' ? 'Ascending' :
-                                        'Descending' }}</span
+                                    <option
+                                        v-for="order in sortOrders"
+                                        :key="order.value"
+                                        :value="order.value"
                                     >
-                                    <i class="fa fa-chevron-down text-xs"></i>
-                                </button>
-                                <div
-                                    v-if="sortOrderOpen"
-                                    class="absolute top-full left-0 mt-1 w-full sm:w-36 bg-white border border-black shadow-lg z-30 py-1"
-                                >
-                                    <button
-                                        @click="sortOrder = 'asc'; sortOrderOpen = false"
-                                        class="w-full text-left px-3 py-1.5 text-sm hover:bg-black hover:text-white flex items-center justify-between"
-                                    >
-                                        <span>Ascending</span>
-                                        <i
-                                            v-if="sortOrder === 'asc'"
-                                            class="fa fa-check"
-                                        ></i>
-                                    </button>
-                                    <button
-                                        @click="sortOrder = 'desc'; sortOrderOpen = false"
-                                        class="w-full text-left px-3 py-1.5 text-sm hover:bg-black hover:text-white flex items-center justify-between"
-                                    >
-                                        <span>Descending</span>
-                                        <i
-                                            v-if="sortOrder === 'desc'"
-                                            class="fa fa-check"
-                                        ></i>
-                                    </button>
-                                </div>
+                                        {{ order.label }}
+                                    </option>
+                                </select>
+                                <i
+                                    class="fa fa-chevron-down text-xs absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-black"
+                                ></i>
                             </div>
                         </div>
                     </div>
@@ -573,21 +514,27 @@
                                             >Phone:</label
                                         >
                                         <div class="relative flex gap-2 w-full">
-                                            <div class="w-24 flex-shrink-0">
-                                                <button
-                                                    type="button"
-                                                    @click="phoneCountryOpen = !phoneCountryOpen; sortByOpen = false; sortOrderOpen = false"
-                                                    class="w-full p-2 border border-black text-sm bg-white font-medium inline-flex items-center justify-between gap-1"
+                                            <div class="relative w-20 flex-shrink-0">
+                                                <div
+                                                    class="w-full p-2 border border-black text-sm bg-white font-medium flex items-center justify-between"
                                                 >
-                                                    <span class="truncate"
-                                                        >{{
-                                                        order.phoneCountryCode
-                                                        }}</span
-                                                    >
+                                                    <span class="truncate">{{ order.phoneCountryCode }}</span>
                                                     <i
-                                                        class="fa fa-chevron-down text-xs"
+                                                        class="fa fa-chevron-down text-xs pointer-events-none text-black"
                                                     ></i>
-                                                </button>
+                                                </div>
+                                                <select
+                                                    v-model="order.phoneCountryCode"
+                                                    class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                                >
+                                                    <option
+                                                        v-for="country in countries"
+                                                        :key="country.name + country.code"
+                                                        :value="country.code"
+                                                    >
+                                                        {{ country.name }} ({{ country.code }})
+                                                    </option>
+                                                </select>
                                             </div>
                                             <input
                                                 v-model="order.phone"
@@ -598,27 +545,6 @@
                                                 placeholder="8012345678"
                                                 class="flex-1 min-w-0 w-full p-2 border border-black text-sm"
                                             />
-                                            <div
-                                                v-if="phoneCountryOpen"
-                                                class="absolute top-full left-0 right-0 mt-1 max-h-60 overflow-y-auto bg-white border border-black shadow-lg z-30 py-1"
-                                            >
-                                                <button
-                                                    v-for="country in countries"
-                                                    :key="country.name + country.code"
-                                                    type="button"
-                                                    @click="order.phoneCountryCode = country.code; selectedCountryName = country.name; phoneCountryOpen = false"
-                                                    class="w-full text-left px-3 py-1.5 text-xs hover:bg-black hover:text-white flex items-center justify-between"
-                                                >
-                                                    <span class="truncate"
-                                                        >{{ country.name }} ({{
-                                                        country.code }})</span
-                                                    >
-                                                    <i
-                                                        v-if="order.phoneCountryCode === country.code && selectedCountryName === country.name"
-                                                        class="fa fa-check"
-                                                    ></i>
-                                                </button>
-                                            </div>
                                         </div>
                                     </div>
 
@@ -650,10 +576,16 @@
                         lessons: lessonsData,
                         sortBy: "",
                         sortOrder: "asc",
-                        sortByOpen: false,
-                        sortOrderOpen: false,
-                        phoneCountryOpen: false,
-                        selectedCountryName: "Nigeria",
+                        sortOptions: [
+                            { value: "subject", label: "Subject" },
+                            { value: "location", label: "Location" },
+                            { value: "price", label: "Price" },
+                            { value: "spaces", label: "Spaces" }
+                        ],
+                        sortOrders: [
+                            { value: "asc", label: "Ascending" },
+                            { value: "desc", label: "Descending" }
+                        ],
                         countries: countryCodesData,
                         order: {
                             name: "",
@@ -803,7 +735,6 @@
                             this.order.name = "";
                             this.order.email = "";
                             this.order.phoneCountryCode = "+234";
-                            this.selectedCountryName = "Nigeria";
                             this.order.phone = "";
                             this.setView("lessons");
                         } else {
