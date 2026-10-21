@@ -55,7 +55,7 @@
                             class="text-xl sm:text-2xl font-bold tracking-tight cursor-pointer flex items-center gap-2"
                             @click="setView('home')"
                         >
-                            <i class="fa fa-graduation-cap"></i> ShopEd
+                            ShopEd
                         </h1>
 
                         <nav class="hidden md:flex items-center gap-2">
@@ -184,7 +184,7 @@
                     v-if="currentView === 'lessons'"
                 >
                     <div
-                        class="flex flex-col sm:flex-row gap-3 w-full mb-6 border border-black bg-white p-3"
+                        class="flex flex-col sm:flex-row gap-3 w-full mb-5 border border-black bg-white p-3"
                     >
                         <div
                             class="relative flex flex-col sm:flex-row sm:items-center gap-2 w-full sm:w-auto"
@@ -210,7 +210,7 @@
                                     </option>
                                 </select>
                                 <i
-                                    class="fa fa-chevron-down text-xs absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-black"
+                                    class="fa fa-chevron-down text-xs absolute right-2.5 top-2 pointer-events-none text-black"
                                 ></i>
                             </div>
                         </div>
@@ -238,7 +238,7 @@
                                     </option>
                                 </select>
                                 <i
-                                    class="fa fa-chevron-down text-xs absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-black"
+                                    class="fa fa-chevron-down text-xs absolute right-2.5 top-2 pointer-events-none text-black"
                                 ></i>
                             </div>
                         </div>
@@ -269,7 +269,7 @@
                                 <h2 class="text-base font-bold mb-1 truncate">
                                     {{ lesson.subject }}
                                 </h2>
-                                <p class="text-sm">
+                                <p class="text-sm truncate">
                                     <i class="fa fa-map-marker"></i> Location:
                                     {{ lesson.location }}
                                 </p>
