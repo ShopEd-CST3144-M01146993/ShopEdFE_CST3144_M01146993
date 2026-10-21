@@ -85,7 +85,7 @@
                             @click="toggleCart"
                             :class="
                                 (numberOfItems === 0 && currentView !== 'cart')
-                                    ? 'border-black bg-black text-white opacity-80 cursor-not-allowed'
+                                    ? 'border-black bg-black text-white opacity-40 cursor-not-allowed'
                                     : currentView === 'cart'
                                         ? 'border-red-600 bg-white text-red-600'
                                         : 'border-red-600 bg-red-600 text-white'
@@ -102,7 +102,7 @@
                             @click="toggleCart"
                             :class="
                                 (numberOfItems === 0 && currentView !== 'cart')
-                                    ? 'border-black bg-black text-white opacity-80 cursor-not-allowed'
+                                    ? 'border-black bg-black text-white opacity-40 cursor-not-allowed'
                                     : currentView === 'cart'
                                         ? 'border-red-600 bg-white text-red-600'
                                         : 'border-red-600 bg-red-600 text-white'
@@ -160,7 +160,7 @@
                             Extracurricular Activities & Lessons
                         </h2>
                         <p class="text-xs text-neutral-600 mt-1 leading-relaxed">
-                            A centralized booking platform for students and tutors across Hendon, Enfield, and regional learning spaces.
+                            A centralized booking platform for students and tutors across Oakwood Hall, Riverdale, Sunnydale, and regional learning spaces.
                         </p>
                     </div>
 
@@ -168,13 +168,13 @@
                         <div class="border border-black p-4 bg-neutral-50">
                             <h3 class="font-bold uppercase mb-1">Diverse Subjects</h3>
                             <p class="text-neutral-600 leading-relaxed">
-                                Browse specialized classes in Mathematics, Sciences, Music, Robotics, Art, and Languages.
+                                Browse specialized classes in Mathematics, Science, Art, Music, Drama, Languages, Cooking, and Chess.
                             </p>
                         </div>
                         <div class="border border-black p-4 bg-neutral-50">
                             <h3 class="font-bold uppercase mb-1">Multiple Campuses</h3>
                             <p class="text-neutral-600 leading-relaxed">
-                                Select lessons held across Hendon, Enfield, Highgate, Riverdale, and nearby hubs.
+                                Select lessons held across Oakwood Hall, Riverdale Center, Sunnydale Campus, Pinecrest Pavilion, and nearby hubs.
                             </p>
                         </div>
                         <div class="border border-black p-4 bg-neutral-50">
@@ -206,8 +206,8 @@
                                     id="sortBySelect"
                                     v-model="sortBy"
                                     v-bind:disabled="isLoading"
-                                    class="appearance-none bg-white text-black border border-black px-3 py-1.5 pr-8 text-xs font-medium uppercase rounded-none cursor-pointer focus:outline-none"
-                                    :class="isLoading && 'opacity-50 cursor-not-allowed'"
+                                    class="h-8 appearance-none bg-white text-black border border-black px-3 pr-8 text-xs font-medium uppercase rounded-none cursor-pointer focus:outline-none"
+                                    :class="isLoading && 'opacity-40 cursor-not-allowed'"
                                 >
                                     <option value="" disabled hidden>Select attribute</option>
                                     <option
@@ -219,33 +219,19 @@
                                     </option>
                                 </select>
                                 <i
-                                    class="fa fa-chevron-down text-[10px] absolute right-2.5 top-2 pointer-events-none text-black"
+                                    class="fa fa-chevron-down text-[10px] absolute right-2.5 top-2.5 pointer-events-none text-black"
                                 ></i>
                             </div>
-                        </div>
 
-                        <div class="flex items-center gap-2">
-                            <label for="sortOrderSelect" class="font-bold uppercase">Order:</label>
-                            <div class="relative">
-                                <select
-                                    id="sortOrderSelect"
-                                    v-model="sortOrder"
-                                    v-bind:disabled="isLoading"
-                                    class="appearance-none bg-white text-black border border-black px-3 py-1.5 pr-8 text-xs font-medium uppercase rounded-none cursor-pointer focus:outline-none"
-                                    :class="isLoading && 'opacity-50 cursor-not-allowed'"
-                                >
-                                    <option
-                                        v-for="order in sortOrders"
-                                        :key="order.value"
-                                        :value="order.value"
-                                    >
-                                        {{ order.label }}
-                                    </option>
-                                </select>
-                                <i
-                                    class="fa fa-chevron-down text-[10px] absolute right-2.5 top-2 pointer-events-none text-black"
-                                ></i>
-                            </div>
+                            <button
+                                v-bind:disabled="isLoading"
+                                @click="toggleSortOrder"
+                                class="h-8 w-8 border border-black bg-white hover:bg-neutral-100 text-black flex items-center justify-center text-xs flex-shrink-0"
+                                :class="isLoading && 'opacity-40 cursor-not-allowed'"
+                                aria-label="Toggle sort order"
+                            >
+                                <i :class="sortOrder === 'asc' ? 'fa fa-sort-amount-asc' : 'fa fa-sort-amount-desc'"></i>
+                            </button>
                         </div>
                     </div>
 
@@ -309,7 +295,7 @@
                             <button
                                 v-else
                                 disabled
-                                class="w-full py-2 border border-black bg-black text-white opacity-80 cursor-not-allowed text-xs font-bold uppercase tracking-wider"
+                                class="w-full py-2 border border-black bg-black text-white opacity-40 cursor-not-allowed text-xs font-bold uppercase tracking-wider"
                             >
                                 Sold Out
                             </button>
@@ -329,7 +315,7 @@
                     </p>
                     <div class="border border-black p-4 bg-neutral-50 text-xs">
                         <h3 class="font-bold uppercase mb-1">Participating Centers:</h3>
-                        <p class="text-neutral-600 leading-relaxed">Hendon Campus, Enfield Campus, Oakwood Hall, Riverdale Center, Highgate Library, Sunnydale Campus.</p>
+                        <p class="text-neutral-600 leading-relaxed">Oakwood Hall, Riverdale Center, Sunnydale Campus, Maple Grove Studio, Pinecrest Pavilion, Willowbrook Theatre, Lakeside Arena, Cedar Ridge Center, Highland Academy, Green Valley School, Meadow View Kitchen, Silverwood Hall.</p>
                     </div>
                 </div>
 
@@ -526,7 +512,7 @@
                                     <button
                                         type="submit"
                                         v-bind:disabled="!canCheckout"
-                                        :class="canCheckout ? 'bg-black text-white hover:bg-neutral-800' : 'bg-black text-white opacity-80 cursor-not-allowed'"
+                                        :class="canCheckout ? 'bg-black text-white hover:bg-neutral-800' : 'bg-black text-white opacity-40 cursor-not-allowed'"
                                         class="w-full mt-4 py-2.5 font-bold text-xs uppercase tracking-wider border border-black"
                                     >
                                         Place Order
@@ -673,6 +659,10 @@
                         } finally {
                             this.isLoading = false;
                         }
+                    },
+
+                    toggleSortOrder() {
+                        this.sortOrder = this.sortOrder === "asc" ? "desc" : "asc";
                     },
 
                     setView(view) {
