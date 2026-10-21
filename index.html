@@ -196,7 +196,9 @@
                                 <select
                                     id="sortBySelect"
                                     v-model="sortBy"
+                                    v-bind:disabled="isLoading"
                                     class="appearance-none bg-white text-black border border-black px-3 py-1.5 pr-8 text-sm font-medium rounded-none w-full sm:w-40 cursor-pointer focus:outline-none"
+                                    :class="isLoading && 'opacity-50 cursor-not-allowed'"
                                 >
                                     <option value="" disabled hidden>Select filter</option>
                                     <option
@@ -223,7 +225,9 @@
                                 <select
                                     id="sortOrderSelect"
                                     v-model="sortOrder"
+                                    v-bind:disabled="isLoading"
                                     class="appearance-none bg-white text-black border border-black px-3 py-1.5 pr-8 text-sm font-medium rounded-none w-full sm:w-36 cursor-pointer focus:outline-none"
+                                    :class="isLoading && 'opacity-50 cursor-not-allowed'"
                                 >
                                     <option
                                         v-for="order in sortOrders"
@@ -241,6 +245,14 @@
                     </div>
 
                     <div
+                        v-if="isLoading"
+                        class="text-center py-12"
+                    >
+                        <p class="text-sm font-bold">Loading lessons...</p>
+                    </div>
+
+                    <div
+                        v-else
                         class="grid grid-cols-1 sm:grid-cols-4 gap-4"
                     >
                         <div
@@ -570,6 +582,7 @@
                 data() {
                     return {
                         backendUrl: "https://m01146993-shoped.onrender.com",
+                        isLoading: false,
                         currentView: "home",
                         mobileMenuOpen: false,
                         cart: [],
@@ -678,6 +691,7 @@
                 },
                 methods: {
                     async fetchLessons() {
+                        this.isLoading = true;
                         try {
                             const response = await fetch(`${this.backendUrl}/lessons`);
                             const data = await response.json();
@@ -687,6 +701,8 @@
                             this.lessons = data;
                         } catch (error) {
                             console.error("Fetch lessons error:", error.message || error);
+                        } finally {
+                            this.isLoading = false;
                         }
                     },
 
