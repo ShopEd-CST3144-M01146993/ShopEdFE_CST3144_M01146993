@@ -251,7 +251,7 @@
                             <div>
                                 <img
                                     class="w-full h-32 object-cover border border-gray-300 mb-2"
-                                    v-bind:src="lesson.image"
+                                    v-bind:src="`${backendUrl}/${lesson.image}`"
                                     v-bind:alt="lesson.altText"
                                 />
                                 <h2 class="text-base font-bold mb-1 truncate">
@@ -400,7 +400,7 @@
                                                 class="flex items-center gap-3"
                                             >
                                                 <img
-                                                    v-bind:src="lesson.image"
+                                                    v-bind:src="`${backendUrl}/${lesson.image}`"
                                                     v-bind:alt="lesson.altText"
                                                     class="w-12 h-12 flex-shrink-0 object-cover border border-black"
                                                 />
@@ -569,10 +569,11 @@
             const app = createApp({
                 data() {
                     return {
+                        backendUrl: "https://m01146993-shoped.onrender.com",
                         currentView: "home",
                         mobileMenuOpen: false,
                         cart: [],
-                        lessons: lessonsData,
+                        lessons: [],
                         sortBy: "",
                         sortOrder: "asc",
                         sortOptions: [
@@ -615,6 +616,7 @@
                     window.addEventListener("hashchange", () => {
                         this.syncViewWithHash();
                     });
+                    this.fetchLessons();
                 },
                 computed: {
                     numberOfItems() {
@@ -675,6 +677,19 @@
                     }
                 },
                 methods: {
+                    async fetchLessons() {
+                        try {
+                            const response = await fetch(`${this.backendUrl}/lessons`);
+                            const data = await response.json();
+                            if (!response.ok) {
+                                throw new Error(data.error);
+                            }
+                            this.lessons = data;
+                        } catch (error) {
+                            console.error("Fetch lessons error:", error.message || error);
+                        }
+                    },
+
                     setView(view) {
                         if (view === "cart" && this.numberOfItems === 0) {
                             return;
