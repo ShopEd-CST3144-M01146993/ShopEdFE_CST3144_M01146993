@@ -214,8 +214,26 @@
 
                 <div v-if="currentView === 'lessons'">
                     <div
-                        class="flex flex-wrap items-center gap-3 mb-6 border border-black p-3 bg-neutral-50 text-xs"
+                        class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 border border-black p-3 bg-neutral-50 text-xs"
                     >
+                        <div class="flex items-center gap-2 w-full sm:w-auto flex-1 sm:max-w-xs">
+                            <label for="searchInput" class="font-bold uppercase">Search:</label>
+                            <div class="relative w-full">
+                                <input
+                                    id="searchInput"
+                                    v-model="searchQuery"
+                                    v-bind:disabled="isLoading"
+                                    type="text"
+                                    placeholder="Search lessons..."
+                                    class="h-8 w-full appearance-none bg-white text-black border border-black px-3 pr-8 text-xs font-medium rounded-none focus:outline-none"
+                                    :class="isLoading && 'opacity-40 cursor-not-allowed'"
+                                />
+                                <i
+                                    class="fa fa-search text-[10px] absolute right-2.5 top-2.5 pointer-events-none text-black"
+                                ></i>
+                            </div>
+                        </div>
+
                         <div class="flex items-center gap-2">
                             <label for="sortBySelect" class="font-bold uppercase">Sort By:</label>
                             <div class="relative">
@@ -569,6 +587,7 @@
                         mobileMenuOpen: false,
                         cart: [],
                         lessons: [],
+                        searchQuery: "",
                         sortBy: "",
                         sortOrder: "asc",
                         sortOptions: [
