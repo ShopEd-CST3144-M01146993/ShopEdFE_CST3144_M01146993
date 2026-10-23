@@ -81,10 +81,10 @@
                         <div class="h-5 w-px bg-neutral-300"></div>
 
                         <button
-                            v-bind:disabled="numberOfItems === 0 && currentView !== 'cart'"
+                            v-bind:disabled="isLoading || (numberOfItems === 0 && currentView !== 'cart')"
                             @click="toggleCart"
                             :class="
-                                (numberOfItems === 0 && currentView !== 'cart')
+                                (isLoading || (numberOfItems === 0 && currentView !== 'cart'))
                                     ? 'border-black bg-black text-white opacity-40 cursor-not-allowed'
                                     : currentView === 'cart'
                                         ? 'border-red-600 bg-white text-red-600'
@@ -98,10 +98,10 @@
 
                     <div class="flex sm:hidden items-center gap-2">
                         <button
-                            v-bind:disabled="numberOfItems === 0 && currentView !== 'cart'"
+                            v-bind:disabled="isLoading || (numberOfItems === 0 && currentView !== 'cart')"
                             @click="toggleCart"
                             :class="
-                                (numberOfItems === 0 && currentView !== 'cart')
+                                (isLoading || (numberOfItems === 0 && currentView !== 'cart'))
                                     ? 'border-black bg-black text-white opacity-40 cursor-not-allowed'
                                     : currentView === 'cart'
                                         ? 'border-red-600 bg-white text-red-600'
@@ -395,7 +395,16 @@
                         </div>
 
                         <div
-                            v-if="cart.length === 0"
+                            v-if="isLoading"
+                            class="border border-black bg-white p-12 text-center"
+                        >
+                            <p class="text-xs font-bold uppercase tracking-wider animate-pulse">
+                                Loading cart items from server...
+                            </p>
+                        </div>
+
+                        <div
+                            v-else-if="cart.length === 0"
                             class="text-center py-12 text-neutral-600 border border-dashed border-neutral-400 p-6"
                         >
                             <p class="text-xs sm:text-sm text-red-600 font-semibold uppercase">Your cart is empty</p>
@@ -733,7 +742,7 @@
                     },
 
                     toggleCart() {
-                        if (this.numberOfItems === 0 && this.currentView !== "cart") {
+                        if (this.isLoading || (this.numberOfItems === 0 && this.currentView !== "cart")) {
                             return;
                         }
                         if (this.currentView === "cart") {
