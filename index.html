@@ -531,7 +531,6 @@
                                         :class="canCheckout && !isSubmitting ? 'bg-black text-white hover:bg-neutral-800' : 'bg-black text-white opacity-40 cursor-not-allowed'"
                                         class="w-full mt-4 py-2.5 font-bold text-xs uppercase tracking-wider border border-black flex items-center justify-center gap-2"
                                     >
-                                        <i v-if="isSubmitting" class="fa fa-spinner fa-spin"></i>
                                         <span>{{ isSubmitting ? 'Processing Order...' : 'Checkout' }}</span>
                                     </button>
                                 </form>
