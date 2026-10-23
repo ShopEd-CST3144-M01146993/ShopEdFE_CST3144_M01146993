@@ -150,6 +150,23 @@
                 </div>
             </header>
 
+            <div
+                v-if="orderConfirmationMessage"
+                class="border-b border-black bg-black text-white px-4 py-2.5 text-xs font-bold uppercase tracking-wider flex items-center justify-between"
+            >
+                <div class="flex items-center gap-2">
+                    <i class="fa fa-check"></i>
+                    <span>{{ orderConfirmationMessage }}</span>
+                </div>
+                <button
+                    @click="orderConfirmationMessage = ''"
+                    class="hover:opacity-70 text-white"
+                    aria-label="Dismiss message"
+                >
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+
             <main class="p-4 sm:p-6 flex-1 sm:flex-none">
                 <div
                     v-if="currentView === 'home'"
@@ -515,7 +532,7 @@
                                         class="w-full mt-4 py-2.5 font-bold text-xs uppercase tracking-wider border border-black flex items-center justify-center gap-2"
                                     >
                                         <i v-if="isSubmitting" class="fa fa-spinner fa-spin"></i>
-                                        <span>{{ isSubmitting ? 'Processing Order...' : 'Place Order' }}</span>
+                                        <span>{{ isSubmitting ? 'Processing Order...' : 'Checkout' }}</span>
                                     </button>
                                 </form>
                             </div>
@@ -539,6 +556,7 @@
                         backendUrl: "https://m01146993-shoped.onrender.com",
                         isLoading: false,
                         isSubmitting: false,
+                        orderConfirmationMessage: "",
                         currentView: "home",
                         mobileMenuOpen: false,
                         cart: [],
@@ -784,7 +802,10 @@
                             await Promise.all(updatePromises);
                             await this.fetchLessons();
 
-                            alert("Order has been placed successfully!");
+                            this.orderConfirmationMessage = "Order has been placed successfully!";
+                            setTimeout(() => {
+                                this.orderConfirmationMessage = "";
+                            }, 7000);
 
                             this.cart = [];
                             localStorage.removeItem("shoped_cart");
