@@ -92,7 +92,7 @@
                             "
                             class="px-3 py-1.5 border font-semibold text-xs uppercase tracking-wider flex items-center gap-1.5"
                         >
-                            <span>Cart ({{ numberOfItems === 0 ? '-' : numberOfItems }})</span>
+                            <span>Cart ({{ (isLoading || numberOfItems === 0) ? '-' : numberOfItems }})</span>
                         </button>
                     </div>
 
@@ -110,7 +110,7 @@
                             class="px-2.5 py-1.5 border font-semibold text-xs uppercase tracking-wider flex items-center gap-1"
                         >
                             <i class="fa fa-shopping-cart"></i>
-                            <span>({{ numberOfItems === 0 ? '-' : numberOfItems }})</span>
+                            <span>({{ (isLoading || numberOfItems === 0) ? '-' : numberOfItems }})</span>
                         </button>
                     </div>
                 </div>
@@ -409,7 +409,7 @@
                             <h2 class="text-lg font-bold uppercase">
                                 Shopping Cart
                             </h2>
-                            <span class="text-xs font-bold">{{ numberOfItems }} {{ numberOfItems === 1 ? 'item' : 'items' }}</span>
+                            <span class="text-xs font-bold">{{ isLoading ? '-' : `${numberOfItems} ${numberOfItems === 1 ? 'item' : 'items'}` }}</span>
                         </div>
 
                         <div
