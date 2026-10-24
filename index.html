@@ -222,13 +222,22 @@
                                 <input
                                     id="searchInput"
                                     v-model="searchQuery"
-                                    v-bind:disabled="isLoading"
+                                    @input="onSearchInput"
                                     type="text"
                                     placeholder="Search lessons..."
                                     class="h-8 w-full appearance-none bg-white text-black border border-black px-3 pr-8 text-xs font-medium rounded-none focus:outline-none"
-                                    :class="isLoading && 'opacity-40 cursor-not-allowed'"
                                 />
+                                <button
+                                    v-if="searchQuery.length > 0"
+                                    @click="clearSearch"
+                                    type="button"
+                                    class="absolute top-2 right-2.5 text-red-600 hover:text-red-800 focus:outline-none"
+                                    aria-label="Clear search"
+                                >
+                                    <i class="fa fa-times text-[11px]"></i>
+                                </button>
                                 <i
+                                    v-else
                                     class="fa fa-search text-[10px] absolute right-2.5 top-2.5 pointer-events-none text-black"
                                 ></i>
                             </div>
@@ -276,6 +285,24 @@
                     >
                         <p class="text-xs font-bold uppercase tracking-wider animate-pulse">
                             Loading lessons from server...
+                        </p>
+                    </div>
+
+                    <div
+                        v-else-if="isSearching"
+                        class="border border-black bg-white p-12 text-center"
+                    >
+                        <p class="text-xs font-bold uppercase tracking-wider animate-pulse">
+                            Searching lessons from server...
+                        </p>
+                    </div>
+
+                    <div
+                        v-else-if="lessons.length === 0"
+                        class="border border-black bg-white p-12 text-center text-xs"
+                    >
+                        <p class="font-bold uppercase tracking-wider text-neutral-600">
+                            No lessons found matching "{{ searchedQuery }}"
                         </p>
                     </div>
 
@@ -588,6 +615,9 @@
                         cart: [],
                         lessons: [],
                         searchQuery: "",
+                        searchedQuery: "",
+                        isSearching: false,
+                        searchTimer: null,
                         sortBy: "",
                         sortOrder: "asc",
                         sortOptions: [
@@ -697,20 +727,49 @@
                     }
                 },
                 methods: {
-                    async fetchLessons() {
-                        this.isLoading = true;
+                    async fetchLessons(isSearch = false) {
+                        const trimmed = this.searchQuery.trim();
+                        const isRealSearch = isSearch && trimmed.length > 0;
+
+                        if (isRealSearch) {
+                            this.isSearching = true;
+                        } else if (this.lessons.length === 0) {
+                            this.isLoading = true;
+                        }
+
                         try {
-                            const response = await fetch(`${this.backendUrl}/lessons`);
+                            const queryParam = trimmed
+                                ? `?search=${encodeURIComponent(trimmed)}`
+                                : "";
+                            const response = await fetch(`${this.backendUrl}/lessons${queryParam}`);
                             const data = await response.json();
                             if (!response.ok) {
                                 throw new Error(data.error);
                             }
                             this.lessons = data;
+                            this.searchedQuery = trimmed;
                         } catch (error) {
                             console.error("Fetch lessons error:", error.message || error);
                         } finally {
+                            this.isSearching = false;
                             this.isLoading = false;
                         }
+                    },
+
+                    onSearchInput() {
+                        const hasQuery = this.searchQuery.trim().length > 0;
+                        this.isSearching = hasQuery;
+                        clearTimeout(this.searchTimer);
+                        this.searchTimer = setTimeout(() => {
+                            this.fetchLessons(hasQuery);
+                        }, hasQuery ? 450 : 100);
+                    },
+
+                    clearSearch() {
+                        this.searchQuery = "";
+                        this.searchedQuery = "";
+                        this.isSearching = false;
+                        this.fetchLessons(false);
                     },
 
                     toggleSortOrder() {
