@@ -298,7 +298,7 @@
                     </div>
 
                     <div
-                        v-else-if="lessons.length === 0"
+                        v-else-if="filteredLessons.length === 0"
                         class="border border-black bg-white p-12 text-center text-xs"
                     >
                         <p class="font-bold uppercase tracking-wider text-neutral-600">
@@ -348,18 +348,12 @@
                                 </div>
                             </div>
                             <button
-                                v-if="canAddToCart(lesson)"
+                                v-bind:disabled="!canAddToCart(lesson)"
                                 class="w-full py-2 bg-black text-white text-xs font-bold uppercase tracking-wider border border-black hover:bg-neutral-800"
+                                :class="canAddToCart(lesson) ? '':'opacity-40 cursor-not-allowed'"
                                 @click="addToCart(lesson)"
                             >
                                 Add to Cart
-                            </button>
-                            <button
-                                v-else
-                                disabled
-                                class="w-full py-2 border border-black bg-black text-white opacity-40 cursor-not-allowed text-xs font-bold uppercase tracking-wider"
-                            >
-                                Sold Out
                             </button>
                         </div>
                     </div>
@@ -582,8 +576,8 @@
                                     <button
                                         type="submit"
                                         v-bind:disabled="!canCheckout || isSubmitting"
-                                        :class="canCheckout && !isSubmitting ? 'bg-black text-white hover:bg-neutral-800' : 'bg-black text-white opacity-40 cursor-not-allowed'"
-                                        class="w-full mt-4 py-2.5 font-bold text-xs uppercase tracking-wider border border-black flex items-center justify-center gap-2"
+                                        :class="canCheckout && !isSubmitting ? 'hover:bg-neutral-800' : 'opacity-40 cursor-not-allowed'"
+                                        class="w-full mt-4 py-2.5 font-bold text-xs uppercase tracking-wider border border-black bg-black text-white flex items-center justify-center gap-2"
                                     >
                                         <span>{{ isSubmitting ? 'Processing Order...' : 'Checkout' }}</span>
                                     </button>
@@ -613,7 +607,8 @@
                         currentView: "home",
                         mobileMenuOpen: false,
                         cart: [],
-                        lessons: [],
+                        lessons: typeof lessonsData !== "undefined" ? [...lessonsData] : [],
+                        filteredLessons: typeof lessonsData !== "undefined" ? [...lessonsData] : [],
                         searchQuery: "",
                         searchedQuery: "",
                         isSearching: false,
@@ -705,9 +700,9 @@
 
                     sortedLessons() {
                         if (!this.sortBy) {
-                            return this.lessons;
+                            return this.filteredLessons;
                         }
-                        return [...this.lessons].sort((a, b) => {
+                        return [...this.filteredLessons].sort((a, b) => {
                             let modifier = this.sortOrder === "desc" ? -1 : 1;
                             let valA = a[this.sortBy];
                             let valB = b[this.sortBy];
@@ -746,8 +741,19 @@
                             if (!response.ok) {
                                 throw new Error(data.error);
                             }
-                            this.lessons = data;
+                            this.filteredLessons = data;
                             this.searchedQuery = trimmed;
+
+                            if (!isRealSearch) {
+                                this.lessons = data;
+                            } else {
+                                data.forEach((searchedLesson) => {
+                                    const index = this.lessons.findIndex((l) => l.id === searchedLesson.id);
+                                    if (index !== -1) {
+                                        this.lessons[index] = searchedLesson;
+                                    }
+                                });
+                            }
                         } catch (error) {
                             console.error("Fetch lessons error:", error.message || error);
                         } finally {
@@ -768,6 +774,7 @@
                     clearSearch() {
                         this.searchQuery = "";
                         this.searchedQuery = "";
+                        this.filteredLessons = this.lessons;
                         this.isSearching = false;
                         this.fetchLessons(false);
                     },
@@ -886,7 +893,9 @@
                             });
 
                             await Promise.all(updatePromises);
-                            await this.fetchLessons();
+                            this.searchQuery = "";
+                            this.searchedQuery = "";
+                            await this.fetchLessons(false);
 
                             this.orderConfirmationMessage = "Order has been placed successfully!";
                             setTimeout(() => {
