@@ -16,7 +16,6 @@
             rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"
         />
-        <script src="lessons.js"></script>
         <script src="countryCodesData.js"></script>
     </head>
 
@@ -81,10 +80,10 @@
                         <div class="h-5 w-px bg-neutral-300"></div>
 
                         <button
-                            v-bind:disabled="isLoading || (numberOfItems === 0 && currentView !== 'cart')"
+                            v-bind:disabled="isLoading || error || (numberOfItems === 0 && currentView !== 'cart')"
                             @click="toggleCart"
                             :class="
-                                (isLoading || (numberOfItems === 0 && currentView !== 'cart'))
+                                (isLoading || error || (numberOfItems === 0 && currentView !== 'cart'))
                                     ? 'border-black bg-black text-white opacity-40 cursor-not-allowed'
                                     : currentView === 'cart'
                                         ? 'border-red-600 bg-white text-red-600'
@@ -92,16 +91,16 @@
                             "
                             class="px-3 py-1.5 border font-semibold text-xs uppercase tracking-wider flex items-center gap-1.5"
                         >
-                            <span>Cart ({{ (isLoading || numberOfItems === 0) ? '-' : numberOfItems }})</span>
+                            <span>Cart ({{ (isLoading || error || numberOfItems === 0) ? '-' : numberOfItems }})</span>
                         </button>
                     </div>
 
                     <div class="flex sm:hidden items-center gap-2">
                         <button
-                            v-bind:disabled="isLoading || (numberOfItems === 0 && currentView !== 'cart')"
+                            v-bind:disabled="isLoading || error || (numberOfItems === 0 && currentView !== 'cart')"
                             @click="toggleCart"
                             :class="
-                                (isLoading || (numberOfItems === 0 && currentView !== 'cart'))
+                                (isLoading || error || (numberOfItems === 0 && currentView !== 'cart'))
                                     ? 'border-black bg-black text-white opacity-40 cursor-not-allowed'
                                     : currentView === 'cart'
                                         ? 'border-red-600 bg-white text-red-600'
@@ -110,7 +109,7 @@
                             class="px-2.5 py-1.5 border font-semibold text-xs uppercase tracking-wider flex items-center gap-1"
                         >
                             <i class="fa fa-shopping-cart"></i>
-                            <span>({{ (isLoading || numberOfItems === 0) ? '-' : numberOfItems }})</span>
+                            <span>({{ (isLoading || error || numberOfItems === 0) ? '-' : numberOfItems }})</span>
                         </button>
                     </div>
                 </div>
@@ -214,6 +213,7 @@
 
                 <div v-if="currentView === 'lessons'">
                     <div
+                        v-if="!error"
                         class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 border border-black p-3 bg-neutral-50 text-xs"
                     >
                         <div class="flex items-center gap-2 w-full sm:w-auto flex-1 sm:max-w-xs">
@@ -277,10 +277,43 @@
                                 <i :class="sortOrder === 'asc' ? 'fa fa-sort-amount-asc' : 'fa fa-sort-amount-desc'"></i>
                             </button>
                         </div>
+                      <div>
+                              <label class="font-bold uppercase">Teachers:</label>
+                              <select
+                                v-model="selectedTeacher"
+                                >
+                                <option value="">All Teachers</option>
+                                <option
+                                  v-for="teacher in teachers"
+                                  :key="teacher._id"
+                                  :value="String(teacher._id)"
+                                  >
+                                  {{ teacher.firstName }} {{teacher.lastName}}
+                                  </option>
+                                </select>
+                              <i
+                                    class="fa fa-chevron-down text-[10px] absolute right-2.5 top-2.5 pointer-events-none text-black"
+                                ></i>
+                      </div>
                     </div>
 
                     <div
-                        v-if="isLoading"
+                        v-if="error"
+                        class="border border-black bg-neutral-50 p-8 text-center text-xs space-y-3"
+                    >
+                        <p class="font-bold text-red-600 uppercase tracking-wider">
+                            [ERROR] {{ error }}
+                        </p>
+                        <button
+                            @click="retryFetch"
+                            class="px-3 py-1 bg-black text-white uppercase text-[11px] font-bold hover:bg-neutral-800"
+                        >
+                            Retry
+                        </button>
+                    </div>
+
+                    <div
+                        v-else-if="isLoading"
                         class="border border-black bg-white p-12 text-center"
                     >
                         <p class="text-xs font-bold uppercase tracking-wider animate-pulse">
@@ -607,8 +640,11 @@
                         currentView: "home",
                         mobileMenuOpen: false,
                         cart: [],
-                        lessons: typeof lessonsData !== "undefined" ? [...lessonsData] : [],
-                        filteredLessons: typeof lessonsData !== "undefined" ? [...lessonsData] : [],
+                        lessons: [],
+                        filteredLessons: [],
+                        error: null,
+                        teachers: [],
+                        selectedTeacher: "",
                         searchQuery: "",
                         searchedQuery: "",
                         isSearching: false,
@@ -656,6 +692,7 @@
                         this.syncViewWithHash();
                     });
                     this.fetchLessons();
+                    this.fetchTeachers();
                 },
                 computed: {
                     numberOfItems() {
@@ -702,6 +739,7 @@
                         if (!this.sortBy) {
                             return this.filteredLessons;
                         }
+                        
                         return [...this.filteredLessons].sort((a, b) => {
                             let modifier = this.sortOrder === "desc" ? -1 : 1;
                             let valA = a[this.sortBy];
@@ -732,6 +770,8 @@
                             this.isLoading = true;
                         }
 
+                        this.error = null;
+
                         try {
                             const queryParam = trimmed
                                 ? `?search=${encodeURIComponent(trimmed)}`
@@ -755,11 +795,34 @@
                                 });
                             }
                         } catch (error) {
+                            this.error = "Server unreachable. Please check backend connection.";
+                            this.filteredLessons = [];
                             console.error("Fetch lessons error:", error.message || error);
                         } finally {
                             this.isSearching = false;
                             this.isLoading = false;
                         }
+                    },
+
+                    retryFetch() {
+                        this.fetchLessons();
+                        if (this.teachers.length === 0) {
+                            this.fetchTeachers();
+                        }
+                    },
+
+                    async fetchTeachers(){
+                      try {
+                        const response = await fetch(`${this.backendUrl}/teachers`);
+                        const data = await response.json();
+
+                        if (!response.ok) {
+                          throw new Error(data.error);
+                        }
+                        this.teachers = data;
+                      } catch (error) {
+                        console.error("Fetch teachers error:", error.message || error);
+                      }
                     },
 
                     onSearchInput() {
