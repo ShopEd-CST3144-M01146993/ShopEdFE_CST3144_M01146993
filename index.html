@@ -769,8 +769,8 @@
                         
                         return [...this.filteredLessons].sort((a, b) => {
                             let modifier = this.sortOrder === "desc" ? -1 : 1;
-                            let valA = a[this.sortBy];
-                            let valB = b[this.sortBy];
+                            let valA = this.sortBy === "spaces" ? this.remainingSpaces(a) : a[this.sortBy];
+                            let valB = this.sortBy === "spaces" ? this.remainingSpaces(b) : b[this.sortBy];
 
                             if (typeof valA === "string") {
                                 valA = valA.toLowerCase();
