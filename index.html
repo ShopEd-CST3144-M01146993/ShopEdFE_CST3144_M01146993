@@ -294,10 +294,10 @@
                             </div>
 
                             <button
-                                v-bind:disabled="isLoading"
+                                v-bind:disabled="isLoading || !sortBy"
                                 @click="toggleSortOrder"
                                 class="h-8 w-8 border border-black bg-white hover:bg-neutral-100 text-black flex items-center justify-center text-xs flex-shrink-0"
-                                :class="isLoading && 'opacity-40 cursor-not-allowed'"
+                                :class="(isLoading || !sortBy) && 'opacity-40 cursor-not-allowed'"
                                 aria-label="Toggle sort order"
                             >
                                 <i :class="sortOrder === 'asc' ? 'fa fa-sort-amount-asc' : 'fa fa-sort-amount-desc'"></i>
