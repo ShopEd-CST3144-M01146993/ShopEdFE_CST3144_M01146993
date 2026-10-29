@@ -355,11 +355,20 @@
                                     </span>
                                 </div>
                                 <img
+                                    v-if="!imageErrors[lesson.id]"
+                                    @error="handleImageError(lesson.id)"
                                     class="w-full h-32 object-cover border border-black mb-3"
                                     :class="remainingSpaces(lesson) < 1 && 'filter grayscale'"
                                     v-bind:src="`${backendUrl}/${lesson.image}`"
                                     v-bind:alt="lesson.altText"
                                 />
+                                <div
+                                    v-else
+                                    class="w-full h-32 bg-black border border-black mb-3 flex flex-col items-center justify-center text-red-600 gap-1.5"
+                                >
+                                    <i class="fa fa-picture-o text-lg"></i>
+                                    <span class="text-[10px] font-bold uppercase tracking-wider">[ IMAGE NOT FOUND ]</span>
+                                </div>
                                 <div class="text-xs space-y-1.5 mb-3 bg-neutral-50 p-2.5 border border-neutral-200">
                                     <div class="flex justify-between">
                                         <span class="text-neutral-500 uppercase">Location:</span>
@@ -504,10 +513,18 @@
                                         >
                                             <div class="flex items-center gap-2.5 min-w-0">
                                                 <img
+                                                    v-if="!imageErrors[lesson.id]"
+                                                    @error="handleImageError(lesson.id)"
                                                     v-bind:src="`${backendUrl}/${lesson.image}`"
                                                     v-bind:alt="lesson.altText"
                                                     class="w-10 h-10 flex-shrink-0 object-cover border border-black"
                                                 />
+                                                <div
+                                                    v-else
+                                                    class="w-10 h-10 flex-shrink-0 bg-black border border-black flex items-center justify-center text-red-600"
+                                                >
+                                                    <i class="fa fa-picture-o text-xs"></i>
+                                                </div>
                                                 <div class="min-w-0 flex-1">
                                                     <p class="font-bold truncate uppercase text-xs">
                                                         {{ lesson.subject }}
@@ -643,6 +660,7 @@
                         lessons: [],
                         filteredLessons: [],
                         error: null,
+                        imageErrors: {},
                         teachers: [],
                         selectedTeacher: "",
                         searchQuery: "",
@@ -802,6 +820,10 @@
                             this.isSearching = false;
                             this.isLoading = false;
                         }
+                    },
+
+                    handleImageError(id) {
+                        this.imageErrors[id] = true;
                     },
 
                     retryFetch() {
