@@ -340,11 +340,26 @@
                     </div>
 
                     <div
-                        v-else-if="filteredLessons.length === 0"
+                        v-else-if="sortedLessons.length === 0"
                         class="border border-black bg-white p-12 text-center text-xs"
                     >
-                        <p class="font-bold uppercase tracking-wider text-neutral-600">
+                        <p
+                            v-if="selectedTeacher"
+                            class="font-bold uppercase tracking-wider text-neutral-600"
+                        >
+                            No lessons found for selected teacher
+                        </p>
+                        <p
+                            v-else-if="searchedQuery"
+                            class="font-bold uppercase tracking-wider text-neutral-600"
+                        >
                             No lessons found matching "{{ searchedQuery }}"
+                        </p>
+                        <p
+                            v-else
+                            class="font-bold uppercase tracking-wider text-neutral-600"
+                        >
+                            No lessons available
                         </p>
                     </div>
 
@@ -763,11 +778,20 @@
                     },
 
                     sortedLessons() {
+                        let result = [...this.filteredLessons];
+                      
+                        if (this.selectedTeacher) {
+                            const teacher = this.teachers.find(teacher => teacher._id === this.selectedTeacher);
+                            if (teacher) {
+                              result = result.filter(lesson => teacher.lessonIDs.includes(lesson.id))
+                            }
+                        }
+                      
                         if (!this.sortBy) {
-                            return this.filteredLessons;
+                            return result;
                         }
                         
-                        return [...this.filteredLessons].sort((a, b) => {
+                        return result.sort((a, b) => {
                             let modifier = this.sortOrder === "desc" ? -1 : 1;
                             let valA = this.sortBy === "spaces" ? this.remainingSpaces(a) : a[this.sortBy];
                             let valB = this.sortBy === "spaces" ? this.remainingSpaces(b) : b[this.sortBy];
