@@ -17,6 +17,96 @@
             href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"
         />
         <script src="countryCodesData.js"></script>
+        <style>
+            [data-theme="dark"] {
+                color-scheme: dark;
+            }
+            [data-theme="dark"] body {
+                background-color: #000000 !important;
+                color: #ededed !important;
+            }
+            [data-theme="dark"] #app {
+                background-color: #000000 !important;
+                border-color: #262626 !important;
+            }
+            [data-theme="dark"] header,
+            [data-theme="dark"] footer {
+                background-color: #050505 !important;
+                border-color: #262626 !important;
+                color: #ededed !important;
+            }
+            [data-theme="dark"] header button,
+            [data-theme="dark"] nav button,
+            [data-theme="dark"] select,
+            [data-theme="dark"] input,
+            [data-theme="dark"] textarea {
+                background-color: #0a0a0a !important;
+                color: #ededed !important;
+                border-color: #2a2a2a !important;
+            }
+            [data-theme="dark"] select option {
+                background-color: #0a0a0a !important;
+                color: #ededed !important;
+            }
+            [data-theme="dark"] nav button.bg-black {
+                background-color: #ededed !important;
+                color: #000000 !important;
+                border-color: #ededed !important;
+            }
+            [data-theme="dark"] .bg-neutral-50 {
+                background-color: #080808 !important;
+                border-color: #222222 !important;
+            }
+            [data-theme="dark"] .bg-white {
+                background-color: #050505 !important;
+                border-color: #262626 !important;
+                color: #ededed !important;
+            }
+            [data-theme="dark"] .text-black {
+                color: #ededed !important;
+            }
+            [data-theme="dark"] .text-neutral-500,
+            [data-theme="dark"] .text-neutral-600 {
+                color: #888888 !important;
+            }
+            [data-theme="dark"] .border-black {
+                border-color: #2a2a2a !important;
+            }
+            [data-theme="dark"] .border-neutral-200,
+            [data-theme="dark"] .border-neutral-300 {
+                border-color: #1f1f1f !important;
+            }
+            [data-theme="dark"] button.bg-black {
+                background-color: #ededed !important;
+                color: #000000 !important;
+                border-color: #ededed !important;
+            }
+            [data-theme="dark"] button.bg-black:hover {
+                background-color: #cccccc !important;
+            }
+            [data-theme="dark"] .fa {
+                color: inherit;
+            }
+            [data-theme="dark"] .bg-neutral-100 {
+                background-color: #141414 !important;
+                border-color: #262626 !important;
+            }
+            [data-theme="dark"] .bg-red-600 {
+                background-color: #dc2626 !important;
+                border-color: #dc2626 !important;
+                color: #ffffff !important;
+            }
+            [data-theme="dark"] .text-red-600 {
+                color: #ef4444 !important;
+            }
+            [data-theme="dark"] .border-red-600 {
+                border-color: #dc2626 !important;
+            }
+            [data-theme="dark"] button.hover\:bg-red-600:hover {
+                background-color: #dc2626 !important;
+                color: #ffffff !important;
+            }
+        </style>
     </head>
 
     <body class="text-black font-mono min-h-screen bg-[#f5f5f5] p-0 sm:py-6 sm:px-4">
@@ -666,6 +756,15 @@
                 <div>ShopEd</div>
                 <div>Lesson Directory & Booking System</div>
             </footer>
+
+            <button
+                @click="toggleTheme"
+                class="fixed bottom-5 right-5 z-50 w-11 h-11 rounded-full border border-black bg-black text-white hover:opacity-80 flex items-center justify-center text-sm shadow-md transition-transform active:scale-95"
+                :class="theme === 'dark' ? 'border-[#333] !bg-[#ededed] !text-black' : ''"
+                :aria-label="theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'"
+            >
+                <i :class="theme === 'dark' ? 'fa fa-sun-o' : 'fa fa-moon-o'"></i>
+            </button>
         </div>
 
         <script>
@@ -675,6 +774,7 @@
                 data() {
                     return {
                         backendUrl: "https://m01146993-shoped.onrender.com",
+                        theme: localStorage.getItem("shoped_theme") || "light",
                         isLoading: false,
                         isSubmitting: false,
                         orderConfirmationMessage: "",
@@ -721,6 +821,7 @@
                     }
                 },
                 mounted() {
+                    document.documentElement.setAttribute("data-theme", this.theme);
                     const savedCart = localStorage.getItem("shoped_cart");
                     if (savedCart) {
                         try {
@@ -899,6 +1000,12 @@
 
                     toggleSortOrder() {
                         this.sortOrder = this.sortOrder === "asc" ? "desc" : "asc";
+                    },
+
+                    toggleTheme() {
+                        this.theme = this.theme === "dark" ? "light" : "dark";
+                        document.documentElement.setAttribute("data-theme", this.theme);
+                        localStorage.setItem("shoped_theme", this.theme);
                     },
 
                     setView(view) {
