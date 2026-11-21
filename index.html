@@ -434,6 +434,15 @@
                 <div
                   class="text-xs space-y-1.5 mb-3 bg-neutral-50 p-2.5 border border-neutral-200 dark:bg-[#080808] dark:border-[#222222]"
                 >
+                  <div
+                    v-if="!selectedTeacher && getTeacherName(lesson.id)"
+                    class="flex justify-between"
+                  >
+                    <span class="text-neutral-500 uppercase dark:text-[#888888]">Teacher:</span>
+                    <span class="font-bold truncate max-w-[140px] dark:text-[#ededed]"
+                      >{{ getTeacherName(lesson.id) }}</span
+                    >
+                  </div>
                   <div class="flex justify-between">
                     <span class="text-neutral-500 uppercase dark:text-[#888888]">Location:</span>
                     <span class="font-bold truncate max-w-[140px] dark:text-[#ededed]"
@@ -881,7 +890,7 @@
               );
               if (teacher) {
                 result = result.filter((lesson) =>
-                  teacher.lessonIDs.includes(lesson.id),
+                  teacher.lessonIDs?.includes(lesson.id),
                 );
               }
             }
@@ -988,6 +997,13 @@
             } catch (error) {
               console.error("Fetch teachers error:", error.message || error);
             }
+          },
+
+          getTeacherName(lessonId) {
+            const teacher = this.teachers.find((t) =>
+              t.lessonIDs?.includes(lessonId),
+            );
+            return teacher ? `${teacher.firstName} ${teacher.lastName}` : "";
           },
 
           onSearchInput() {
