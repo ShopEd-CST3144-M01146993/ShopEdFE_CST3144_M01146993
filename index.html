@@ -30,12 +30,15 @@
   <body
     class="text-black font-mono min-h-screen bg-[#f5f5f5] p-0 sm:py-6 sm:px-4 dark:bg-black dark:text-[#ededed]"
   >
+    <!-- Root Vue Application Container -->
     <div
       id="app"
       class="max-w-4xl mx-auto border-x sm:border border-black bg-white min-h-screen sm:min-h-0 flex flex-col dark:bg-black dark:border-[#262626]"
     >
+      <!-- Sticky Navigation Header -->
       <header class="sticky top-0 z-50 bg-white border-b border-black dark:bg-[#050505] dark:border-[#262626]">
         <div class="px-4 py-3 flex items-center justify-between">
+          <!-- Logo & Brand Title -->
           <div class="flex items-center gap-3">
             <button
               @click="mobileMenuOpen = !mobileMenuOpen"
@@ -57,6 +60,7 @@
             </span>
           </div>
 
+          <!-- Desktop Navigation Bar & Cart Trigger -->
           <div class="hidden sm:flex items-center gap-3">
             <nav class="flex items-center gap-1.5 text-xs">
               <button
@@ -94,6 +98,7 @@
 
             <div class="h-5 w-px bg-neutral-300 dark:bg-[#262626]"></div>
 
+            <!-- Desktop Shopping Cart Button -->
             <button
               v-bind:disabled="isLoading || error || (numberOfItems === 0 && currentView !== 'cart')"
               @click="toggleCart"
@@ -113,6 +118,7 @@
             </button>
           </div>
 
+          <!-- Mobile Shopping Cart Button -->
           <div class="flex sm:hidden items-center gap-2">
             <button
               v-bind:disabled="isLoading || error || (numberOfItems === 0 && currentView !== 'cart')"
@@ -135,6 +141,7 @@
           </div>
         </div>
 
+        <!-- Mobile Navigation Menu Drawer -->
         <div
           v-if="mobileMenuOpen"
           class="sm:hidden border-t border-black bg-white p-3 space-y-1.5 text-xs dark:bg-[#050505] dark:border-[#262626]"
@@ -170,6 +177,7 @@
         </div>
       </header>
 
+      <!-- Order Confirmation Notification Banner -->
       <div
         v-if="orderConfirmationMessage"
         class="border-b border-black bg-black text-white px-4 py-2.5 text-xs font-bold uppercase tracking-wider flex items-center justify-between dark:border-[#262626] dark:bg-[#141414] dark:text-[#ededed]"
@@ -187,7 +195,9 @@
         </button>
       </div>
 
+      <!-- Main Content Container -->
       <main class="p-4 sm:p-6 flex-1 sm:flex-none">
+        <!-- View: Home Landing Section -->
         <div v-if="currentView === 'home'" class="space-y-6">
           <div class="border-b border-black pb-4 dark:border-[#262626]">
             <h2 class="text-xl font-bold uppercase tracking-tight">
@@ -233,7 +243,9 @@
           </div>
         </div>
 
+        <!-- View: Lessons Directory & Booking Grid -->
         <div v-if="currentView === 'lessons'">
+          <!-- Filter Controls: Full-text Search, Teacher Selector & Sorting -->
           <div
             v-if="!error && !isLoading"
             class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6 border border-black p-3 bg-neutral-50 text-xs dark:bg-[#080808] dark:border-[#222222]"
@@ -340,6 +352,7 @@
             </div>
           </div>
 
+          <!-- UI Feedback State: Network / Server Error Alert -->
           <div
             v-if="error"
             class="border border-black bg-neutral-50 p-8 text-center text-xs space-y-3 dark:bg-[#080808] dark:border-[#222222]"
@@ -355,6 +368,7 @@
             </button>
           </div>
 
+          <!-- UI Feedback State: Initial Data Loading Indicator -->
           <div
             v-else-if="isLoading"
             class="border border-black bg-white p-12 text-center dark:bg-[#050505] dark:border-[#262626]"
@@ -364,6 +378,7 @@
             </p>
           </div>
 
+          <!-- UI Feedback State: Search Query Processing Indicator -->
           <div
             v-else-if="isSearching"
             class="border border-black bg-white p-12 text-center dark:bg-[#050505] dark:border-[#262626]"
@@ -373,6 +388,7 @@
             </p>
           </div>
 
+          <!-- UI Feedback State: Zero Search / Filter Results -->
           <div
             v-else-if="sortedLessons.length === 0"
             class="border border-black bg-white p-12 text-center text-xs dark:bg-[#050505] dark:border-[#262626]"
@@ -397,6 +413,7 @@
             </p>
           </div>
 
+          <!-- Lesson Cards Catalog Grid -->
           <div
             v-else
             class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"
@@ -478,6 +495,7 @@
           </div>
         </div>
 
+        <!-- View: About Us Section -->
         <div v-if="currentView === 'about'" class="space-y-4">
           <div class="border-b border-black pb-2 dark:border-[#262626]">
             <h2 class="text-lg font-bold uppercase">About ShopEd</h2>
@@ -498,6 +516,7 @@
           </div>
         </div>
 
+        <!-- View: Contact & Support Section -->
         <div v-if="currentView === 'contact'" class="space-y-4">
           <div class="border-b border-black pb-2 dark:border-[#262626]">
             <h2 class="text-lg font-bold uppercase">Contact Information</h2>
@@ -509,6 +528,7 @@
             <p><span class="font-bold">Telephone:</span> +44 20 8411 5000</p>
           </div>
 
+          <!-- Contact Feedback Form -->
           <form
             @submit.prevent="alert('Message sent successfully!')"
             class="space-y-3 max-w-sm"
@@ -552,8 +572,10 @@
           </form>
         </div>
 
+        <!-- View: Shopping Cart & Checkout Section -->
         <div v-if="currentView === 'cart'">
           <div>
+            <!-- Cart Header & Item Counter -->
             <div
               class="border-b border-black pb-2 mb-6 flex justify-between items-center dark:border-[#262626]"
             >
@@ -564,6 +586,7 @@
               >
             </div>
 
+            <!-- Empty Cart Display -->
             <div
               v-if="isLoading"
               class="border border-black bg-white p-12 text-center dark:bg-[#050505] dark:border-[#262626]"
@@ -592,7 +615,9 @@
               </button>
             </div>
 
+            <!-- Cart Line Items & Checkout Form Columns -->
             <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- Column 1: Cart Items Summary -->
               <div>
                 <h3
                   class="text-xs font-bold uppercase border-b border-black pb-1 mb-3 text-neutral-700 dark:border-[#262626] dark:text-[#888888]"
@@ -638,6 +663,7 @@
                     </div>
                   </template>
                 </div>
+                <!-- Total Order Price Row -->
                 <div
                   class="mt-4 pt-3 border-t border-black flex justify-between items-center text-xs font-bold dark:border-[#262626]"
                 >
@@ -646,6 +672,7 @@
                 </div>
               </div>
 
+              <!-- Column 2: Customer Checkout Form -->
               <div>
                 <h3
                   class="text-xs font-bold uppercase border-b border-black pb-1 mb-3 text-neutral-700 dark:border-[#262626] dark:text-[#888888]"
@@ -751,6 +778,7 @@
         </div>
       </main>
 
+      <!-- Global Site Footer -->
       <footer
         class="border-t border-black bg-neutral-50 px-4 py-3 flex flex-wrap justify-between items-center text-xs text-neutral-600 dark:bg-[#050505] dark:border-[#262626] dark:text-[#888888]"
       >
@@ -758,6 +786,7 @@
         <div>Lesson Directory & Booking System</div>
       </footer>
 
+      <!-- Floating Dark / Light Theme Toggle Button -->
       <button
         @click="toggleTheme"
         class="fixed bottom-5 right-5 z-50 w-11 h-11 rounded-full border border-black bg-black text-white hover:opacity-80 flex items-center justify-center text-sm shadow-md transition-transform active:scale-95 dark:border-[#333333] dark:bg-[#ededed] dark:text-black"
@@ -770,7 +799,16 @@
     <script>
       const { createApp } = Vue;
 
+      /**
+       * Root Vue application instance controlling UI state, lesson directory,
+       * search/sort filtering, shopping cart, and checkout ordering.
+       */
       const app = createApp({
+        /**
+         * Defines the reactive state of the application.
+         *
+         * @returns {object} Application reactive state object.
+         */
         data() {
           return {
             backendUrl: "https://m01146993-shoped.onrender.com",
@@ -813,6 +851,11 @@
           };
         },
         watch: {
+          /**
+           * Synchronizes the shopping cart array with browser localStorage on mutation.
+           *
+           * @param {number[]} newCart - Array of lesson ID integers in the cart.
+           */
           cart: {
             handler(newCart) {
               localStorage.setItem("shoped_cart", JSON.stringify(newCart));
@@ -820,6 +863,10 @@
             deep: true,
           },
         },
+        /**
+         * Lifecycle hook executed after the component is mounted to the DOM.
+         * Restores theme, cached cart, hash navigation, and fetches initial dataset.
+         */
         mounted() {
           this.applyTheme(this.theme);
           const savedCart = localStorage.getItem("shoped_cart");
@@ -838,16 +885,31 @@
           this.fetchTeachers();
         },
         computed: {
+          /**
+           * Total count of individual lesson items currently added to the cart.
+           *
+           * @returns {number} Item quantity count.
+           */
           numberOfItems() {
             return this.cart.length;
           },
 
+          /**
+           * Aggregated total payable monetary amount for all items in the shopping cart.
+           *
+           * @returns {number} Total price in GBP (£).
+           */
           cartTotal() {
             return this.lessons.reduce((total, lesson) => {
               return total + lesson.price * this.lessonCount(lesson.id);
             }, 0);
           },
 
+          /**
+           * Validates that the customer name contains letters and whitespace only.
+           *
+           * @returns {boolean} True if customer name is non-empty and valid.
+           */
           isNameValid() {
             const nameRegex = /^[A-Za-z\s]+$/;
             return (
@@ -856,6 +918,11 @@
             );
           },
 
+          /**
+           * Validates customer email format if provided (email is optional per brief).
+           *
+           * @returns {boolean} True if empty or matches standard email regex.
+           */
           isEmailValid() {
             if (this.order.email.trim().length === 0) {
               return true;
@@ -864,6 +931,11 @@
             return emailRegex.test(this.order.email.trim());
           },
 
+          /**
+           * Validates that the customer phone number consists solely of numeric digits.
+           *
+           * @returns {boolean} True if phone number contains digits only.
+           */
           isPhoneValid() {
             const phoneRegex = /^[0-9]+$/;
             return (
@@ -872,6 +944,11 @@
             );
           },
 
+          /**
+           * Evaluates whether order checkout requirements are fully satisfied.
+           *
+           * @returns {boolean} True if cart has items and all required fields pass regex validation.
+           */
           canCheckout() {
             return (
               this.cart.length > 0 &&
@@ -881,6 +958,12 @@
             );
           },
 
+          /**
+           * Returns lessons filtered by selected teacher and sorted by attribute & order.
+           * Reactively recalculates remaining availability when items are added to the cart.
+           *
+           * @returns {Array<object>} Filtered and sorted array of lesson objects.
+           */
           sortedLessons() {
             let result = [...this.filteredLessons];
 
@@ -925,6 +1008,13 @@
           },
         },
         methods: {
+          /**
+           * Fetches lessons from the backend REST API. Supports query-based full-text searching.
+           *
+           * @async
+           * @param {boolean} [isSearch=false] - Whether the fetch is triggered by a search query.
+           * @returns {Promise<void>}
+           */
           async fetchLessons(isSearch = false) {
             const trimmed = this.searchQuery.trim();
             const isRealSearch = isSearch && trimmed.length > 0;
@@ -974,10 +1064,21 @@
             }
           },
 
+          /**
+           * Tracks broken image URLs to display a fallback placeholder.
+           *
+           * @param {number} id - Unique identifier of the lesson whose image failed to load.
+           * @returns {void}
+           */
           handleImageError(id) {
             this.imageErrors[id] = true;
           },
 
+          /**
+           * Retries fetching lessons and teachers after an initial network failure.
+           *
+           * @returns {void}
+           */
           retryFetch() {
             this.fetchLessons();
             if (this.teachers.length === 0) {
@@ -985,6 +1086,12 @@
             }
           },
 
+          /**
+           * Fetches teacher profiles and their assigned lesson IDs from the backend API.
+           *
+           * @async
+           * @returns {Promise<void>}
+           */
           async fetchTeachers() {
             try {
               const response = await fetch(`${this.backendUrl}/teachers`);
@@ -999,6 +1106,12 @@
             }
           },
 
+          /**
+           * Finds and formats the full name of the teacher assigned to a lesson.
+           *
+           * @param {number} lessonId - Unique lesson integer ID.
+           * @returns {string} Full name of the teacher or empty string if unassigned.
+           */
           getTeacherName(lessonId) {
             const teacher = this.teachers.find((t) =>
               t.lessonIDs?.includes(lessonId),
@@ -1006,6 +1119,11 @@
             return teacher ? `${teacher.firstName} ${teacher.lastName}` : "";
           },
 
+          /**
+           * Debounces live search input to avoid spamming the backend API on every keystroke.
+           *
+           * @returns {void}
+           */
           onSearchInput() {
             const hasQuery = this.searchQuery.trim().length > 0;
             this.isSearching = hasQuery;
@@ -1018,6 +1136,11 @@
             );
           },
 
+          /**
+           * Clears current search input and resets the catalog to all available lessons.
+           *
+           * @returns {void}
+           */
           clearSearch() {
             this.searchQuery = "";
             this.searchedQuery = "";
@@ -1026,10 +1149,21 @@
             this.fetchLessons(false);
           },
 
+          /**
+           * Toggles sorting order between ascending ('asc') and descending ('desc').
+           *
+           * @returns {void}
+           */
           toggleSortOrder() {
             this.sortOrder = this.sortOrder === "asc" ? "desc" : "asc";
           },
 
+          /**
+           * Applies light or dark theme mode across DOM elements and saves to localStorage.
+           *
+           * @param {string} theme - Either 'dark' or 'light'.
+           * @returns {void}
+           */
           applyTheme(theme) {
             if (theme === "dark") {
               document.documentElement.classList.add("dark");
@@ -1040,11 +1174,22 @@
             localStorage.setItem("shoped_theme", theme);
           },
 
+          /**
+           * Alternates between dark and light appearance modes.
+           *
+           * @returns {void}
+           */
           toggleTheme() {
             this.theme = this.theme === "dark" ? "light" : "dark";
             this.applyTheme(this.theme);
           },
 
+          /**
+           * Switches the currently active application view and updates browser URL hash.
+           *
+           * @param {string} view - Target view identifier ('home', 'lessons', 'about', 'contact', 'cart').
+           * @returns {void}
+           */
           setView(view) {
             if (view === "cart" && this.numberOfItems === 0) {
               return;
@@ -1054,6 +1199,11 @@
             this.mobileMenuOpen = false;
           },
 
+          /**
+           * Synchronizes active view with the browser URL window hash on load or hashchange.
+           *
+           * @returns {void}
+           */
           syncViewWithHash() {
             const validViews = ["home", "lessons", "about", "contact", "cart"];
             const hash = window.location.hash.replace("#", "").trim();
@@ -1068,20 +1218,43 @@
             }
           },
 
+          /**
+           * Computes the real-time remaining available spaces for a lesson minus current cart count.
+           *
+           * @param {object} lesson - The lesson document object.
+           * @returns {number} Remaining capacity count.
+           */
           remainingSpaces(lesson) {
             return lesson.spaces - this.lessonCount(lesson.id);
           },
 
+          /**
+           * Checks whether a lesson has available capacity to be added to cart.
+           *
+           * @param {object} lesson - The lesson document object.
+           * @returns {boolean} True if remaining spaces is greater than zero.
+           */
           canAddToCart(lesson) {
             return this.remainingSpaces(lesson) > 0;
           },
 
+          /**
+           * Adds a single space for the given lesson into the shopping cart.
+           *
+           * @param {object} lesson - The lesson to add.
+           * @returns {void}
+           */
           addToCart(lesson) {
             if (this.canAddToCart(lesson)) {
               this.cart.push(lesson.id);
             }
           },
 
+          /**
+           * Toggles view between the shopping cart page and the lessons directory.
+           *
+           * @returns {void}
+           */
           toggleCart() {
             if (
               this.isLoading ||
@@ -1096,6 +1269,13 @@
             }
           },
 
+          /**
+           * Executes order checkout by submitting order data via POST /orders and
+           * updating each lesson's remaining space count via PUT /lessons/:id.
+           *
+           * @async
+           * @returns {Promise<void>}
+           */
           async checkout() {
             if (!this.canCheckout || this.isSubmitting) {
               return;
@@ -1182,10 +1362,22 @@
             }
           },
 
+          /**
+           * Returns how many spaces of a particular lesson ID are currently in the cart.
+           *
+           * @param {number} lessonID - Unique integer ID of the lesson.
+           * @returns {number} Count of spaces in cart for this lesson.
+           */
           lessonCount(lessonID) {
             return this.cart.filter((id) => id === lessonID).length;
           },
 
+          /**
+           * Removes one unit of a lesson from the cart, restoring space back to the directory.
+           *
+           * @param {number} lessonID - Unique integer ID of the lesson to remove.
+           * @returns {void}
+           */
           removeFromCart(lessonID) {
             const index = this.cart.indexOf(lessonID);
             if (index !== -1) {
@@ -1193,6 +1385,12 @@
             }
           },
 
+          /**
+           * Blocks non-numeric character keydown events in the phone input field.
+           *
+           * @param {KeyboardEvent} event - Standard browser keyboard event.
+           * @returns {void}
+           */
           onPhoneKeydown(event) {
             const allowedKeys = [
               "Backspace",
@@ -1209,6 +1407,12 @@
             }
           },
 
+          /**
+           * Sanitizes phone input text to ensure only numeric digits remain.
+           *
+           * @param {InputEvent} event - Standard browser input event.
+           * @returns {void}
+           */
           onPhoneInput(event) {
             this.order.phone = event.target.value.replace(/\D/g, "");
           },
